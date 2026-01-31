@@ -86,6 +86,7 @@ function Board() {
             row={row}
             col={col}
             piece={pieceSymbol}
+            pieceColor={piece?.color}
             isSelected={isSelected}
             isPossibleMove={isPossibleMove}
             onSquareClick={handleSquareClick}
@@ -120,23 +121,26 @@ function Board() {
       </div>
       <div className="board">
         <div className="board-wrapper">
-          {/* 左上角占位符 */}
-          <div className="corner-cell"></div>
-          {/* 顶部列标签 */}
-          <div className="board-col-labels">
-            {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((label) => (
-              <div key={label} className="col-label">{label}</div>
-            ))}
+          <div className="board-main">
+            {/* 棋盘网格 */}
+            <div className="board-grid">
+              {renderBoard()}
+            </div>
+            {/* 右侧行标签：从下到上 1～8 */}
+            <div className="board-row-labels">
+              {['8', '7', '6', '5', '4', '3', '2', '1'].map((label) => (
+                <div key={label} className="row-label">{label}</div>
+              ))}
+            </div>
           </div>
-          {/* 左侧行标签 */}
-          <div className="board-row-labels">
-            {['8', '7', '6', '5', '4', '3', '2', '1'].map((label) => (
-              <div key={label} className="row-label">{label}</div>
-            ))}
-          </div>
-          {/* 棋盘网格 */}
-          <div className="board-grid">
-            {renderBoard()}
+          <div className="board-bottom">
+            {/* 下方列标签：a～h */}
+            <div className="board-col-labels">
+              {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((label) => (
+                <div key={label} className="col-label">{label}</div>
+              ))}
+            </div>
+            <div className="corner-cell"></div>
           </div>
         </div>
       </div>
