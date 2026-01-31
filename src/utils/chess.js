@@ -7,18 +7,20 @@ export const PIECE_TYPES = {
   KNIGHT: 'knight',
   BISHOP: 'bishop',
   QUEEN: 'queen',
-  KING: 'king'
+  KING: 'king',
 };
 
 // 棋子颜色
 export const COLORS = {
   WHITE: 'white',
-  BLACK: 'black'
+  BLACK: 'black',
 };
 
 // 创建初始棋盘
 export function createInitialBoard() {
-  const board = Array(8).fill(null).map(() => Array(8).fill(null));
+  const board = Array(8)
+    .fill(null)
+    .map(() => Array(8).fill(null));
 
   // 放置白棋
   board[7][0] = { type: PIECE_TYPES.ROOK, color: COLORS.WHITE };
@@ -55,9 +57,19 @@ function isValidPosition(row, col) {
 }
 
 // 检查是否可以移动（基础规则）
-export function isValidMove(board, fromRow, fromCol, toRow, toCol, currentPlayer) {
+export function isValidMove(
+  board,
+  fromRow,
+  fromCol,
+  toRow,
+  toCol,
+  currentPlayer
+) {
+  if (!isValidPosition(fromRow, fromCol) || !isValidPosition(toRow, toCol)) {
+    return false;
+  }
   const piece = board[fromRow][fromCol];
-  
+
   if (!piece || piece.color !== currentPlayer) {
     return false;
   }
@@ -70,7 +82,14 @@ export function isValidMove(board, fromRow, fromCol, toRow, toCol, currentPlayer
   // 根据棋子类型检查移动
   switch (piece.type) {
     case PIECE_TYPES.PAWN:
-      return isValidPawnMove(board, fromRow, fromCol, toRow, toCol, piece.color);
+      return isValidPawnMove(
+        board,
+        fromRow,
+        fromCol,
+        toRow,
+        toCol,
+        piece.color
+      );
     case PIECE_TYPES.ROOK:
       return isValidRookMove(board, fromRow, fromCol, toRow, toCol);
     case PIECE_TYPES.KNIGHT:
@@ -100,7 +119,7 @@ function isValidPawnMove(board, fromRow, fromCol, toRow, toCol, color) {
       return !board[fromRow + direction][fromCol]; // 起始位置可以移动两格
     }
   }
-  
+
   // 斜吃
   if (Math.abs(toCol - fromCol) === 1 && toRow === fromRow + direction) {
     return !!targetPiece && targetPiece.color !== color;
@@ -112,19 +131,19 @@ function isValidPawnMove(board, fromRow, fromCol, toRow, toCol, color) {
 // 车的移动规则
 function isValidRookMove(board, fromRow, fromCol, toRow, toCol) {
   if (fromRow !== toRow && fromCol !== toCol) return false;
-  
-  const rowStep = fromRow === toRow ? 0 : (toRow > fromRow ? 1 : -1);
-  const colStep = fromCol === toCol ? 0 : (toCol > fromCol ? 1 : -1);
-  
+
+  const rowStep = fromRow === toRow ? 0 : toRow > fromRow ? 1 : -1;
+  const colStep = fromCol === toCol ? 0 : toCol > fromCol ? 1 : -1;
+
   let currentRow = fromRow + rowStep;
   let currentCol = fromCol + colStep;
-  
+
   while (currentRow !== toRow || currentCol !== toCol) {
     if (board[currentRow][currentCol]) return false;
     currentRow += rowStep;
     currentCol += colStep;
   }
-  
+
   return true;
 }
 
@@ -138,39 +157,41 @@ function isValidKnightMove(board, fromRow, fromCol, toRow, toCol) {
 // 象的移动规则
 function isValidBishopMove(board, fromRow, fromCol, toRow, toCol) {
   if (Math.abs(toRow - fromRow) !== Math.abs(toCol - fromCol)) return false;
-  
+
   const rowStep = toRow > fromRow ? 1 : -1;
   const colStep = toCol > fromCol ? 1 : -1;
-  
+
   let currentRow = fromRow + rowStep;
   let currentCol = fromCol + colStep;
-  
+
   while (currentRow !== toRow || currentCol !== toCol) {
     if (board[currentRow][currentCol]) return false;
     currentRow += rowStep;
     currentCol += colStep;
   }
-  
+
   return true;
 }
 
 // 后的移动规则
 function isValidQueenMove(board, fromRow, fromCol, toRow, toCol) {
-  return isValidRookMove(board, fromRow, fromCol, toRow, toCol) ||
-         isValidBishopMove(board, fromRow, fromCol, toRow, toCol);
+  return (
+    isValidRookMove(board, fromRow, fromCol, toRow, toCol) ||
+    isValidBishopMove(board, fromRow, fromCol, toRow, toCol)
+  );
 }
 
 // 王的移动规则
 function isValidKingMove(board, fromRow, fromCol, toRow, toCol) {
   const rowDiff = Math.abs(toRow - fromRow);
   const colDiff = Math.abs(toCol - fromCol);
-  return (rowDiff <= 1 && colDiff <= 1) && (rowDiff + colDiff > 0);
+  return rowDiff <= 1 && colDiff <= 1 && rowDiff + colDiff > 0;
 }
 
 // 获取所有可能的移动位置
 export function getPossibleMoves(board, row, col, currentPlayer) {
   const moves = [];
-  
+
   for (let toRow = 0; toRow < 8; toRow++) {
     for (let toCol = 0; toCol < 8; toCol++) {
       if (isValidMove(board, row, col, toRow, toCol, currentPlayer)) {
@@ -178,13 +199,13 @@ export function getPossibleMoves(board, row, col, currentPlayer) {
       }
     }
   }
-  
+
   return moves;
 }
 
 // 执行移动
 export function makeMove(board, fromRow, fromCol, toRow, toCol) {
-  const newBoard = board.map(row => [...row]);
+  const newBoard = board.map((row) => [...row]);
   newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
   newBoard[fromRow][fromCol] = null;
   return newBoard;
@@ -193,7 +214,7 @@ export function makeMove(board, fromRow, fromCol, toRow, toCol) {
 // 获取棋子的Unicode符号
 export function getPieceSymbol(piece) {
   if (!piece) return '';
-  
+
   const symbols = {
     [COLORS.WHITE]: {
       [PIECE_TYPES.KING]: '♔',
@@ -201,7 +222,7 @@ export function getPieceSymbol(piece) {
       [PIECE_TYPES.ROOK]: '♖',
       [PIECE_TYPES.BISHOP]: '♗',
       [PIECE_TYPES.KNIGHT]: '♘',
-      [PIECE_TYPES.PAWN]: '♙'
+      [PIECE_TYPES.PAWN]: '♙',
     },
     [COLORS.BLACK]: {
       [PIECE_TYPES.KING]: '♚',
@@ -209,11 +230,9 @@ export function getPieceSymbol(piece) {
       [PIECE_TYPES.ROOK]: '♜',
       [PIECE_TYPES.BISHOP]: '♝',
       [PIECE_TYPES.KNIGHT]: '♞',
-      [PIECE_TYPES.PAWN]: '♟'
-    }
+      [PIECE_TYPES.PAWN]: '♟',
+    },
   };
-  
+
   return symbols[piece.color]?.[piece.type] || '';
 }
-
-

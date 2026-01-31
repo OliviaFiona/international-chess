@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Square from './Square';
 import {
   createInitialBoard,
@@ -6,7 +6,7 @@ import {
   isValidMove,
   makeMove,
   getPossibleMoves,
-  COLORS
+  COLORS,
 } from '../utils/chess';
 import '../styles/Board.css';
 
@@ -22,7 +22,11 @@ function Board() {
     const piece = board[row][col];
 
     // 如果点击了已选中的方格，取消选择
-    if (selectedSquare && selectedSquare.row === row && selectedSquare.col === col) {
+    if (
+      selectedSquare &&
+      selectedSquare.row === row &&
+      selectedSquare.col === col
+    ) {
       setSelectedSquare(null);
       setPossibleMoves([]);
       return;
@@ -31,14 +35,16 @@ function Board() {
     // 如果已经有选中的方格
     if (selectedSquare) {
       // 检查是否可以移动到目标位置
-      if (isValidMove(
-        board,
-        selectedSquare.row,
-        selectedSquare.col,
-        row,
-        col,
-        currentPlayer
-      )) {
+      if (
+        isValidMove(
+          board,
+          selectedSquare.row,
+          selectedSquare.col,
+          row,
+          col,
+          currentPlayer
+        )
+      ) {
         // 执行移动
         const newBoard = makeMove(
           board,
@@ -48,7 +54,9 @@ function Board() {
           col
         );
         setBoard(newBoard);
-        setCurrentPlayer(currentPlayer === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE);
+        setCurrentPlayer(
+          currentPlayer === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE
+        );
         setSelectedSquare(null);
         setPossibleMoves([]);
       } else if (piece && piece.color === currentPlayer) {
@@ -70,14 +78,15 @@ function Board() {
   // 渲染棋盘
   const renderBoard = () => {
     const squares = [];
-    
+
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const piece = board[row][col];
         const pieceSymbol = piece ? getPieceSymbol(piece) : null;
-        const isSelected = selectedSquare?.row === row && selectedSquare?.col === col;
+        const isSelected =
+          selectedSquare?.row === row && selectedSquare?.col === col;
         const isPossibleMove = possibleMoves.some(
-          move => move.row === row && move.col === col
+          (move) => move.row === row && move.col === col
         );
 
         squares.push(
@@ -94,7 +103,7 @@ function Board() {
         );
       }
     }
-    
+
     return squares;
   };
 
@@ -123,13 +132,13 @@ function Board() {
         <div className="board-wrapper">
           <div className="board-main">
             {/* 棋盘网格 */}
-            <div className="board-grid">
-              {renderBoard()}
-            </div>
+            <div className="board-grid">{renderBoard()}</div>
             {/* 右侧行标签：从下到上 1～8 */}
             <div className="board-row-labels">
               {['8', '7', '6', '5', '4', '3', '2', '1'].map((label) => (
-                <div key={label} className="row-label">{label}</div>
+                <div key={label} className="row-label">
+                  {label}
+                </div>
               ))}
             </div>
           </div>
@@ -137,7 +146,9 @@ function Board() {
             {/* 下方列标签：a～h */}
             <div className="board-col-labels">
               {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((label) => (
-                <div key={label} className="col-label">{label}</div>
+                <div key={label} className="col-label">
+                  {label}
+                </div>
               ))}
             </div>
             <div className="corner-cell"></div>
@@ -149,4 +160,3 @@ function Board() {
 }
 
 export default Board;
-
