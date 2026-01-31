@@ -62,11 +62,26 @@
   align-items: center;
 }
 
-/* 棋盘+右侧行标+下方列标：用 flex 保证标签可见 */
+/* 棋盘+左侧/右侧行标+上方/下方列标：用 flex 保证标签可见 */
 .board-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+/* 上方列标签行：左角格 + a～h */
+.board-top {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+
+.board-col-labels-top {
+  width: 480px;
+  min-width: 480px;
+  height: 30px;
+  min-height: 30px;
 }
 
 .board-main {
@@ -86,7 +101,8 @@
   flex-shrink: 0;
 }
 
-.board-row-labels {
+.board-row-labels,
+.board-row-labels-left {
   display: flex;
   flex-direction: column;
   width: 30px;
@@ -108,6 +124,10 @@
   flex-direction: row;
   align-items: stretch;
   width: 100%;
+}
+
+.board-bottom .corner-cell:first-child {
+  flex-shrink: 0;
 }
 
 .board-col-labels {
@@ -164,7 +184,8 @@
     font-size: 2rem;
   }
 
-  .board-col-labels {
+  .board-col-labels,
+  .board-col-labels-top {
     width: 320px;
     min-width: 320px;
     height: 25px;
@@ -206,7 +227,8 @@
 }
 
 @media (max-width: 480px) {
-  .board-col-labels {
+  .board-col-labels,
+  .board-col-labels-top {
     width: 280px;
     min-width: 280px;
     height: 20px;

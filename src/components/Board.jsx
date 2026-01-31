@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Square from './Square';
+import Toast from './Toast';
 import {
   createInitialBoard,
   getPieceSymbol,
@@ -16,6 +17,13 @@ function Board() {
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [possibleMoves, setPossibleMoves] = useState([]);
   const [gameStatus, setGameStatus] = useState('游戏进行中');
+  const [toast, setToast] = useState({ message: '', visible: false });
+
+  // 每次轮到谁下棋就显示对应 toast（开局白方、每次换手）
+  useEffect(() => {
+    const message = currentPlayer === COLORS.WHITE ? '白方下棋' : '黑方下棋';
+    setToast({ message, visible: true });
+  }, [currentPlayer]);
 
   // 处理方格点击
   const handleSquareClick = (row, col) => {
@@ -118,6 +126,11 @@ function Board() {
 
   return (
     <div className="board-container">
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onClose={() => setToast((t) => ({ ...t, visible: false }))}
+      />
       <div className="game-info">
         <h1>国际象棋</h1>
         <p className="current-player">
@@ -130,7 +143,26 @@ function Board() {
       </div>
       <div className="board">
         <div className="board-wrapper">
+          {/* 上方列标签：a～h（从左到右） */}
+          <div className="board-top">
+            <div className="corner-cell"></div>
+            <div className="board-col-labels board-col-labels-top">
+              {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((label) => (
+                <div key={`top-${label}`} className="col-label">
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="board-main">
+            {/* 左侧行标签：从下往上 1～8 */}
+            <div className="board-row-labels board-row-labels-left">
+              {['8', '7', '6', '5', '4', '3', '2', '1'].map((label) => (
+                <div key={`left-${label}`} className="row-label">
+                  {label}
+                </div>
+              ))}
+            </div>
             {/* 棋盘网格 */}
             <div className="board-grid">{renderBoard()}</div>
             {/* 右侧行标签：从下到上 1～8 */}
@@ -143,6 +175,7 @@ function Board() {
             </div>
           </div>
           <div className="board-bottom">
+            <div className="corner-cell"></div>
             {/* 下方列标签：a～h */}
             <div className="board-col-labels">
               {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((label) => (
