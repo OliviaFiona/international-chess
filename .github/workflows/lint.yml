@@ -3,8 +3,7 @@ name: Code Style Check
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  pull_request: {}  # 不指定 branches，所有 PR 都会触发流水线
 
 jobs:
   lint:
